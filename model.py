@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:test123@172.28.88.56:5432/postgres'
+
 db = SQLAlchemy(app)
 api = Api(app)
 
@@ -20,7 +21,7 @@ class user(db.Model):
     password = db.Column(db.String())
     create_time = db.Column(db.DateTime,default=datetime.datetime.now)
 
-    def __init__(self, username, password, create_time):
+    def __init__(self, username, password):
         self.username=username
         self.password=password
-        self.create_time=create_time
+        #self.create_time=create_time

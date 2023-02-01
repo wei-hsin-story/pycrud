@@ -4,8 +4,11 @@ import socket
 
 from fastapi.encoders import jsonable_encoder
 import json
+import logging
 from model import *
 
+
+logging.getLogger().setLevel(logging.INFO)
 ip = socket.gethostbyname(socket.gethostname())
 
 class User(Resource):
@@ -20,7 +23,14 @@ class User(Resource):
 
     def post(self):
         json_data = request.get_json(force=True)
-        print(json_data)
+        u = user(json_data['username'],json_data['password']) 
+        logging.info(u)
+        try:
+            db.session.add(u)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+ 
         return {
             'message': 'Insert user successfully',
             'data': json_data
@@ -49,21 +59,11 @@ class Users(Resource):
         rows = user.query.all()
         data = jsonable_encoder(rows)
         
-        for r in rows:
-            print (r.id)
-        
-       # data = row2dict(result)
         return{
             'message': 'List all users successfully',
             'data': data
         }
 
-
-def row2dict(rows):
-    for ret in row:
-        retList.append(ret.__dict__)
-        pass
-    return d
 
 # User Operation
 api.add_resource(Users, '/users')
@@ -71,5 +71,5 @@ api.add_resource(User, '/user')
 
 if __name__ == '__main__':
     print(db)
-    app.run(debug=True, port=5000,host="172.28.88.56")
+    app.run(debug=True, port=5000,host=ip)
 
