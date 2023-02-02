@@ -1,18 +1,35 @@
 #!/usr/bin/env python3
-from sqlalchemy.orm import Session
-from model import user
-   
-def listAll():
-    #print(db.query(user).all())
-    print(user)
-    return user.query.all()
-def list():
-    return 
-def update():
-    return
-    
-def add():
-    return 
+import logging
+from model import *
 
-def delete():
-    return
+logging.getLogger().setLevel(logging.INFO)
+
+class UserORM():
+    def listAll():
+        return user.query.all()
+    def list(id):
+        return user.query.filter_by(id=id).first()
+    def update(user_data):
+        u = user.query.filter_by(id=user_data['id']).first()
+        u.username = user_data['username']
+        u.password = user_data['password']
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e)
+    
+    def add(user):
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+        return  user.query.filter_by(id=user.id).first()
+    def delete(id):
+        u = user.query.filter_by(id=id).first()
+        try:
+            db.session.delete(u)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+        return u
